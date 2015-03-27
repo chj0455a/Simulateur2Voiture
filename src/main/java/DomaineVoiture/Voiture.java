@@ -6,12 +6,16 @@ public class Voiture extends Observable {
 
 	private int x;
 	private int y;
+    private int longueur;
+    private int largeur;
 	private int vitesseMetreSeconde;
 	private int directionEnDegres;
 
-	public Voiture(int x, int y, int vitesse) {
-		this.x = x;
-		this.y = y;
+	public Voiture(int vitesse, Route maRoute, int longueur) {
+		this.longueur = longueur;
+        this.largeur = maRoute.getLargeur()/5;
+        this.x = maRoute.getX();
+		this.y = maRoute.getY() + maRoute.getLargeur()/2 - this.largeur/2;
 		this.vitesseMetreSeconde = vitesse;
 		this.directionEnDegres = 0;
 	}

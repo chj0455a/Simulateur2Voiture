@@ -1,27 +1,22 @@
 package AppliSimu;
 
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
-import java.awt.Panel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
 
+import DomaineVoiture.Route;
 import DomaineVoiture.Voiture;
 
 public class IHMVoiture extends JFrame implements Observer{
 
-	private double paramatreConversionMetresPixels = 0.5;
+	static double paramatreConversionMetresPixels = 0.5;
 	private Voiture maVoiture;
+    private Route maRoute;
 	private CommandeVoiture maCommandeVoiture;
-	
+
 	private void initGraphique() {
 		this.setTitle("Simulateur de Voiture");
 		this.setSize(505, 505);
@@ -31,9 +26,10 @@ public class IHMVoiture extends JFrame implements Observer{
 		this.setVisible(true);
 	}
 	
-	public IHMVoiture(Voiture maVoiture) {
+	public IHMVoiture(Voiture maVoiture, Route maRoute) {
 		super();
-		this.maVoiture = maVoiture;
+        this.maRoute = maRoute;
+        this.maVoiture = maVoiture;
 		maVoiture.addObserver(this);
 		initGraphique();
 	}
@@ -57,6 +53,7 @@ public class IHMVoiture extends JFrame implements Observer{
 	public void paint(Graphics contexteGraphique) {
 		super.paint(contexteGraphique);
 		contexteGraphique.setColor(Color.red);
+        dessinerRoute(contexteGraphique);
 		dessinerVoiture(contexteGraphique);
 	}
 
@@ -64,7 +61,14 @@ public class IHMVoiture extends JFrame implements Observer{
 	private void dessinerVoiture(Graphics contexteGraphique) {
 		int xMetres = maVoiture.getX();
 		int xPixel = calculerPositionPixels(xMetres);
-		contexteGraphique.fillRect(xPixel, 300, 30, 15);
+		contexteGraphique.fillRect(xPixel, 300, 30, this.maRoute.getLargeur() / 5);
 	}
-	
+
+    private void dessinerRoute(Graphics contexteGraphique) {
+        int pixelDebutRoute = this.calculerPositionPixels(this.maRoute.getX());
+        contexteGraphique.drawLine(pixelDebutRoute, 300, pixelDebutRoute + maRoute.getLongueur(), 300);
+
+        int pixelFinRoute = 300 + this.maRoute.getLargeur();
+        contexteGraphique.drawLine(pixelDebutRoute, pixelFinRoute, pixelDebutRoute + maRoute.getLongueur(), pixelFinRoute);
+    }
 }
