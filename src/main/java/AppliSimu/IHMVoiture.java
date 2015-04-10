@@ -7,7 +7,7 @@ import java.util.Observer;
 
 import javax.swing.JFrame;
 
-import DomaineVoiture.Route;
+import DomaineRoute.Route;
 import DomaineVoiture.Voiture;
 
 public class IHMVoiture extends JFrame implements Observer{
@@ -15,6 +15,7 @@ public class IHMVoiture extends JFrame implements Observer{
 	static double paramatreConversionMetresPixels = 0.5;
 	private Voiture maVoiture;
     private Route maRoute;
+    private Route maRoute2;
 	private CommandeVoiture maCommandeVoiture;
 
 	private void initGraphique() {
@@ -33,6 +34,15 @@ public class IHMVoiture extends JFrame implements Observer{
 		maVoiture.addObserver(this);
 		initGraphique();
 	}
+
+    public IHMVoiture(Voiture maVoiture, Route maRoute,Route maRoute2) {
+        super();
+        this.maRoute = maRoute;
+        this.maRoute2 = maRoute2;
+        this.maVoiture = maVoiture;
+        maVoiture.addObserver(this);
+        initGraphique();
+    }
 
 	public IHMVoiture() {
 		super();
@@ -53,7 +63,9 @@ public class IHMVoiture extends JFrame implements Observer{
 	public void paint(Graphics contexteGraphique) {
 		super.paint(contexteGraphique);
 		contexteGraphique.setColor(Color.red);
-        dessinerRoute(contexteGraphique);
+        dessinerRouteHorizontale(contexteGraphique,maRoute);
+        if(maRoute2 != null)
+            dessinerRouteVerticale(contexteGraphique,maRoute2);
 		dessinerVoiture(contexteGraphique);
 	}
 
@@ -61,14 +73,31 @@ public class IHMVoiture extends JFrame implements Observer{
 	private void dessinerVoiture(Graphics contexteGraphique) {
 		int xMetres = maVoiture.getX();
 		int xPixel = calculerPositionPixels(xMetres);
-		contexteGraphique.fillRect(xPixel, 300, 30, this.maRoute.getLargeur() / 5);
+        int yPixel = calculerPositionPixels(maVoiture.getY());
+        int longueurPixelVoiture = this.calculerPositionPixels(maVoiture.getLongueur());
+        int largeurPixelVoiture = this.calculerPositionPixels(maVoiture.getLargeur());
+		contexteGraphique.fillRect(xPixel,yPixel, longueurPixelVoiture, largeurPixelVoiture);
 	}
 
-    private void dessinerRoute(Graphics contexteGraphique) {
-        int pixelDebutRoute = this.calculerPositionPixels(this.maRoute.getX());
-        contexteGraphique.drawLine(pixelDebutRoute, 300, pixelDebutRoute + maRoute.getLongueur(), 300);
+    private void dessinerRouteHorizontale(Graphics contexteGraphique,Route maRoute) {
+        int XpixelDebutRoute = this.calculerPositionPixels(maRoute.getX());
+        int YpixelDebutRoute = this.calculerPositionPixels(maRoute.getY());
+        int xPixelFinRoute = XpixelDebutRoute + this.calculerPositionPixels(maRoute.getLongueur());
+        contexteGraphique.drawLine(XpixelDebutRoute, YpixelDebutRoute, xPixelFinRoute,YpixelDebutRoute );
 
-        int pixelFinRoute = 300 + this.maRoute.getLargeur();
-        contexteGraphique.drawLine(pixelDebutRoute, pixelFinRoute, pixelDebutRoute + maRoute.getLongueur(), pixelFinRoute);
+        int pixelFinRoute = YpixelDebutRoute + this.calculerPositionPixels(maRoute.getLargeur());
+        int XFinRoute = XpixelDebutRoute + this.calculerPositionPixels(maRoute.getLongueur());
+        contexteGraphique.drawLine(XpixelDebutRoute, pixelFinRoute,XFinRoute , pixelFinRoute);
+    }
+
+    private void dessinerRouteVerticale(Graphics contexteGraphique,Route maRoute) {
+        int XpixelDebutRoute = this.calculerPositionPixels(maRoute.getX());
+        int YpixelDebutRoute = this.calculerPositionPixels(maRoute.getY());
+        int yPixelFinRoute = YpixelDebutRoute + this.calculerPositionPixels(maRoute.getLongueur());
+        contexteGraphique.drawLine(XpixelDebutRoute, YpixelDebutRoute, XpixelDebutRoute,yPixelFinRoute );
+
+        int XpixelFinRoute = XpixelDebutRoute + this.calculerPositionPixels(maRoute.getLargeur());
+        int XFinRoute = XpixelDebutRoute + this.calculerPositionPixels(maRoute.getLongueur());
+        contexteGraphique.drawLine(XpixelFinRoute, YpixelDebutRoute,XpixelFinRoute , yPixelFinRoute);
     }
 }

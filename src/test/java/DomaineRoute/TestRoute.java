@@ -1,12 +1,15 @@
-package DomaineVoiture;
+package DomaineRoute;
 
-import static org.junit.Assert.*;
+import DomaineRoute.Route;
+import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * Created by 21103468 on 27/03/2015.
  */
-public class TestRoute {
+public class TestRoute extends TestCase{
 
+    @Test
     public void testCreationRoute() {
         Route maRoute = new Route(100,300,10,500);
         assertEquals(100,maRoute.getX());

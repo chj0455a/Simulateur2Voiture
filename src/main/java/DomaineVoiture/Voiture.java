@@ -1,5 +1,7 @@
 package DomaineVoiture;
 
+import DomaineRoute.Route;
+
 import java.util.Observable;
 
 public class Voiture extends Observable {
@@ -10,12 +12,14 @@ public class Voiture extends Observable {
     private int largeur;
 	private int vitesseMetreSeconde;
 	private int directionEnDegres;
+    private Route maRoute;
 
-	public Voiture(int vitesse, Route maRoute, int longueur) {
+	public Voiture(int vitesse, Route maRoute, int longueur,int largeur) {
 		this.longueur = longueur;
-        this.largeur = maRoute.getLargeur()/5;
+        this.maRoute = maRoute;
+        this.largeur = largeur;
         this.x = maRoute.getX();
-		this.y = maRoute.getY() + maRoute.getLargeur()/2 - this.largeur/2;
+		this.y = maRoute.getY() + maRoute.getLargeur()*3/4 - this.largeur/2;
 		this.vitesseMetreSeconde = vitesse;
 		this.directionEnDegres = 0;
 	}
@@ -31,10 +35,10 @@ public class Voiture extends Observable {
 		else
 			x -= vitesseMetreSeconde;
 		
-		if (x > 1000)
-			x = 1000;
-		else if (x < 0)
-			x = 0;
+		if (x > (maRoute.getX() + maRoute.getLongueur() - this.longueur))
+			x = maRoute.getX() + maRoute.getLongueur() - this.longueur;
+		else if (x < maRoute.getX())
+			x = maRoute.getX();
 	}
 
 	private void notificationObservateur() {
@@ -46,7 +50,19 @@ public class Voiture extends Observable {
 		return x;
 	}
 
-	public void accelerer() {
+    public int getY() {
+        return y;
+    }
+
+    public int getLongueur() {
+        return longueur;
+    }
+
+    public int getLargeur() {
+        return largeur;
+    }
+
+    public void accelerer() {
 		if (vitesseMetreSeconde < 100)
 			vitesseMetreSeconde += 10;	
 	}
@@ -69,6 +85,16 @@ public class Voiture extends Observable {
 		directionEnDegres = directionEnDegres % 360;
 		
 	}
+
+    public void tournerGauche() {
+        directionEnDegres += 270 ;
+        directionEnDegres = directionEnDegres % 360;
+    }
+
+    public void tournerDroite() {
+        directionEnDegres += 90 ;
+        directionEnDegres = directionEnDegres % 360;
+    }
 
 	public Object getDirection() {
 	return directionEnDegres;
